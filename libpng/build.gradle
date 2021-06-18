@@ -1,0 +1,120 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+// Copy header and set cmake root dir
+def cppPath = Paths.get(projectDir.absolutePath, 'src', 'main', 'cpp').toFile().absolutePath
+def cmakeDir = new File(projectDir.absolutePath, '.cxx')
+def cmakeOutputDir = new File(cmakeDir, 'cmake')
+def includeDir = new File(cmakeDir, 'include')
+def includePath = includeDir.absolutePath
+
+if (!cmakeDir.exists()) cmakeDir.mkdirs()
+if (!cmakeOutputDir.exists()) cmakeOutputDir.mkdirs()
+if (!includeDir.exists()) includeDir.mkdirs()
+
+Files.copy(
+        Paths.get(cppPath, "png.h"),
+        Paths.get(includePath, "png.h"),
+        StandardCopyOption.REPLACE_EXISTING
+)
+
+Files.copy(
+        Paths.get(cppPath, "pngconf.h"),
+        Paths.get(includePath, "pngconf.h"),
+        StandardCopyOption.REPLACE_EXISTING
+)
+
+Files.copy(
+        Paths.get(cppPath, 'scripts', 'pnglibconf.h.prebuilt'),
+        Paths.get(includePath, "pnglibconf.h"),
+        StandardCopyOption.REPLACE_EXISTING
+)
+
+android {
+    compileSdk 30
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 30
+        versionCode VER_CODE.toInteger()
+        versionName VER_NAME
+        consumerProguardFiles "consumer-rules.pro"
+        externalNativeBuild { cmake { cppFlags "-std=c++17" } }
+    }
+
+    buildFeatures {
+        prefabPublishing = true
+    }
+
+    prefab {
+        png_static {
+            headers includePath
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+            buildStagingDirectory cmakeOutputDir.absolutePath
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    afterEvaluate {
+        generateReleaseBuildConfig.enabled = false
+        generateDebugBuildConfig.enabled = false
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFileName = output.outputFileName
+            if (outputFileName != null && outputFileName.endsWith('-release.aar')) {
+                def fileName = "libpng-android-prefab-${VER_NAME}.aar"
+                output.outputFileName = fileName
+            }
+        }
+    }
+}
+
+dependencies {}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'me.limeice'
+                artifactId = 'libpng-android-prefab'
+                version = VER_NAME
+            }
+        }
+        repositories {
+            maven {
+                name "GitHubPackages"
+                url "https://maven.pkg.github.com/limevista/libpng-android-prefab"
+                credentials {
+                    username System.getenv("GITHUB_ACTOR")
+                    password System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+    }
+}
