@@ -40,7 +40,7 @@ android {
     compileSdk 30
 
     defaultConfig {
-        minSdk 21
+        minSdk 19
         targetSdk 30
         versionCode VER_CODE.toInteger()
         versionName VER_NAME
@@ -68,7 +68,7 @@ android {
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
-            version "3.10.2"
+            version "3.18.1"
             buildStagingDirectory cmakeOutputDir.absolutePath
         }
     }
@@ -90,6 +90,16 @@ android {
                 def fileName = "libpng-android-prefab-${VER_NAME}.aar"
                 output.outputFileName = fileName
             }
+        }
+    }
+
+    testFixtures {
+        enable = true
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
         }
     }
 }

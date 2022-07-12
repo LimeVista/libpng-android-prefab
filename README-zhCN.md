@@ -8,7 +8,7 @@
 [libpng](http://www.libpng.org/pub/png/libpng.html)
 
 ## 要求
-* Android SDK 21+
+* Android SDK 19+
 * Android Studio 4.1.+
 
 ## 应用

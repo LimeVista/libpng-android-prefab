@@ -8,7 +8,7 @@ The `libpng` static library for Android.
 [libpng](http://www.libpng.org/pub/png/libpng.html)
 
 ## Environment
-* Android SDK 21+
+* Android SDK 19+
 * Android Studio 4.1.+
 
 ## Usage
