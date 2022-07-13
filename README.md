@@ -51,6 +51,7 @@ find_package(libpng REQUIRED CONFIG)
 target_link_libraries(your-lib
         libpng::png_static
         ${ZLIB_LIBRARY}
+        z
         # ...
         )
 ```
