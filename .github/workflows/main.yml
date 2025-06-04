@@ -23,6 +23,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - uses: android-actions/setup-android@v3
+        run: sdkmanager "cmake;3.18.1"
+
       - name: Execute Gradle build
         run: ./gradlew :libpng:publish
         env:
