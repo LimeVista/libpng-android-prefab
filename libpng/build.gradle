@@ -50,6 +50,7 @@ android {
 
     buildFeatures {
         prefabPublishing = true
+        buildConfig = false
     }
 
     prefab {
@@ -76,11 +77,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    afterEvaluate {
-        generateReleaseBuildConfig.enabled = false
-        generateDebugBuildConfig.enabled = false
     }
 
     libraryVariants.all { variant ->
