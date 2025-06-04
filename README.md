@@ -10,6 +10,7 @@ The `libpng` static library for Android.
 ## Environment
 * Android SDK 19+
 * Android Studio 4.1.+
+* Build NDK Version r26d
 
 ## Usage
 

@@ -10,6 +10,7 @@
 ## 要求
 * Android SDK 19+
 * Android Studio 4.1.+
+* Build NDK Version r26d
 
 ## 应用
 
