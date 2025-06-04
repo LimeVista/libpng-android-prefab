@@ -106,10 +106,13 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
                 groupId = 'me.limeice'
                 artifactId = 'libpng-android-prefab'
                 version = VER_NAME
+
+                afterEvaluate {
+                    from components.release
+                }
             }
         }
         repositories {
